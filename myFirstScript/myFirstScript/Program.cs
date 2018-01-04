@@ -18,50 +18,58 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
+        const string debugLCDname = "DebugLCD";
         IMyTextPanel debugLCD;
         List<IMyTerminalBlock> _blockList;
         List<IMyCameraBlock> _cameraList;
 
+        uint tick;
+        double runtime = 0;
         public Program()
-
         {
-            int cmerasCount = 0,
-                textPanelsCount = 0;
+            tick = 0;
+            Runtime.UpdateFrequency = UpdateFrequency.Update1;
+
+            UInt64 camerasCount = 0,
+                    textPanelsCount = 0;
 
             _blockList = new List<IMyTerminalBlock>();
             _cameraList = new List<IMyCameraBlock>();
             GridTerminalSystem.GetBlocks(_blockList);
-            
+
             foreach (var currentBlock in _blockList)
             {
                 if (currentBlock is IMyCameraBlock)
                 {
-                    currentBlock.CustomName = $"{base.Me.CubeGrid.CustomName}::Camera 000{0.ToString()}";
+                    currentBlock.CustomName = $"{base.Me.CubeGrid.CustomName}::Camera 000{camerasCount.ToString()}";
                     (currentBlock as IMyCameraBlock).EnableRaycast = true;
                     _cameraList.Add(currentBlock as IMyCameraBlock);
 
-                    cmerasCount++;
+                    camerasCount++;
                     continue;
                 }
 
                 if (currentBlock is IMyTextPanel)
                 {
-                    if (currentBlock.CustomName == "DebugLCD")
-                    {   
+                    if (currentBlock.CustomName.Contains(debugLCDname) )
+                    {
                         debugLCD = currentBlock as IMyTextPanel;
-                        debugLCD.CustomName = $"{Me.CubeGrid.CustomName}::{debugLCD.CustomName}";
+                        debugLCD.CustomName = $"{Me.CubeGrid.CustomName}::{debugLCDname}";
                         debugLCD.ShowPublicTextOnScreen();
                         continue;
+                    } else
+                    {
+
+                        (currentBlock as IMyTextPanel).ShowPublicTextOnScreen();
+                        (currentBlock as IMyTextPanel).CustomName = $"{Me.CubeGrid.CustomName}::TextPanel 000{textPanelsCount.ToString()}";
+
+                        textPanelsCount++;
+                        continue;
                     }
-
-                    (currentBlock as IMyTextPanel).ShowPublicTextOnScreen();
-                    (currentBlock as IMyTextPanel).CustomName = $"{Me.CubeGrid.CustomName}::TextPanel 000{textPanelsCount}";
-
-                    textPanelsCount++;
-                    continue;
                 }
             }
-
+            Echo($"camerasCount: {camerasCount}");
+            Echo($"textPanelsCount: {textPanelsCount}");
         }
 
         public void Save()
@@ -71,14 +79,28 @@ namespace IngameScript
 
         public void Main(string argument)
         {
+            tick++;
+            runtime += Runtime.LastRunTimeMs;
+
             if (debugLCD != null)
             {
-                debugLCD.WritePublicText("ehuuuu");
+                debugLCD.WritePublicText($"Run Time: {runtime.ToString()} \n" +
+                                         $"Tick: {tick}");
                 debugLCD.ShowPublicTextOnScreen();
             } else
             {
                 Echo("DebugLCD not found :(");
             }
+
+
         }
     }
 }
+
+
+/*}catch (Exception e){
+
+        Echo( $"Except : \n {e}");
+
+}
+*/
