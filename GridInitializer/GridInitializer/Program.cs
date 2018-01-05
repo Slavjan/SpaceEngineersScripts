@@ -22,8 +22,8 @@ namespace IngameScript
 
         public Program()
         {
-            
-            
+
+
         }
 
         public void Save()
@@ -38,11 +38,17 @@ namespace IngameScript
 
         public class BlocksNumerator
         {
-            ushort _numberLenght = 4;
+            byte _numberLenght = 4;
             public uint _currentNum
             {
                 private set;
                 get;
+            }
+
+            public BlocksNumerator numberLenght( byte value )
+            {               
+                    _numberLenght = value;
+                    return this;
             }
 
             public BlocksNumerator(ushort numberLenght = 4)
@@ -73,19 +79,23 @@ namespace IngameScript
 
         public static class BlocksNameficator
         {
-            public static void namefy<T>(T block, BlocksNumerator numerator)
+            public static void namefy(IMyTerminalBlock block, BlocksNumerator numerator)
             {
                 string typeName = block.GetType().ToString();
                 int index = typeName.IndexOf("My") + 2;
                 string newBlockName = typeName.Substring(index) + numerator.blockNumber();
-            }           
+            }
+        }
+
+        public class TypesIndexes : Dictionary<Type, byte>
+        {
         }
 
         /// <summary>
         ///     TypesCollection
         ///     contanes some Types and Quantity of objects of this type
         /// </summary>
-        public class TypesCollection : Dictionary<Type, uint>
+        public class BlocksCollection : Dictionary<IMyTerminalBlock, uint>
         {
         }
 
@@ -93,14 +103,24 @@ namespace IngameScript
         ///     BlocksOfTypeCollection
         ///     contanes All Bloks of grid, type of every block and quontity of blocks of this Type or Interface
         /// </summary>
-        public class BlocksOfTypeCollection : Dictionary<IMyTerminalBlock, TypesCollection>
+        public class BlocksOfTypeCollection : Dictionary<Type, BlocksCollection>
         {
         }
 
         public class GridInitializer
         {
             Program _parentProgram;
-            BlocksOfTypeCollection _blocksDictionary;
+            public BlocksOfTypeCollection _blocksDictionary
+            {
+                get;
+                private set;
+            }
+
+            public TypesIndexes _typesIdexes
+            {
+                get;
+                private set;
+            }
 
             GridInitializer(Program parentProgram)
             {
@@ -114,10 +134,18 @@ namespace IngameScript
                 List<IMyTerminalBlock> blocksList = new List<IMyTerminalBlock>();
                 _parentProgram.GridTerminalSystem.GetBlocks(blocksList);
 
-                BlocksNumerator[] countOfType = new BlocksNumerator[32];
-                uint i = 0;
+                BlocksNumerator[] countOfType = new BlocksNumerator [32];
+
+                _typesIdexes = new TypesIndexes();
+
+                uint index = 0;
+
+                Random random = new Random();
+
                 foreach (var currentBlock in blocksList)
                 {
+
+                    /**
                     if (currentBlock is IMyCameraBlock)
                     {
                         BlocksNameficator.namefy<IMyCameraBlock>( (currentBlock as IMyCameraBlock), countOfType[0]);
@@ -278,7 +306,24 @@ namespace IngameScript
                         TypesCollection camsCollection = new TypesCollection();
 
                         camsCollection[(currentBlock as IMyAirVent).GetType()] = countOfType[22]._currentNum;
+                    }*/
+
+                    if (_blocksDictionary[currentBlock.GetType()] == null)
+                    {
+                        _blocksDictionary[currentBlock.GetType()][currentBlock] = 0;
+                    } else
+                    {
+                        _blocksDictionary[currentBlock.GetType()][currentBlock]++;
                     }
+
+                    if (_typesIdexes[currentBlock.GetType()] == 0)
+                    {
+                        _typesIdexes[currentBlock.GetType()] = (byte)random.Next(1, 32);
+                    }
+
+                    BlocksNameficator.namefy(currentBlock as IMyTerminalBlock, 
+                                             (countOfType[_typesIdexes[currentBlock.GetType()]]).numberLenght(5));
+
                 }
             }
         }
