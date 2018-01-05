@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myFirstScript", "myFirstScript\myFirstScript.csproj", "{A0832617-2F2C-475C-8747-D9B77A1B4B02}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A0832617-2F2C-475C-8747-D9B77A1B4B02}.Debug|x64.ActiveCfg = Debug|x64
+		{A0832617-2F2C-475C-8747-D9B77A1B4B02}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ACF6519F-90F6-4CF5-8354-B4041822AD82}
+	EndGlobalSection
+EndGlobal

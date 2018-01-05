@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myTelescope", "myTelescope\myTelescope.csproj", "{05D840D6-AB4A-48F3-8760-B27CC7FEC4F8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05D840D6-AB4A-48F3-8760-B27CC7FEC4F8}.Debug|x64.ActiveCfg = Debug|x64
+		{05D840D6-AB4A-48F3-8760-B27CC7FEC4F8}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3CB4A034-A286-4D84-9587-69FCA274AD62}
+	EndGlobalSection
+EndGlobal
