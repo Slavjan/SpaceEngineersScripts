@@ -23,6 +23,7 @@ namespace IngameScript
         public Program()
         {
             
+            
         }
 
         public void Save()
@@ -75,7 +76,8 @@ namespace IngameScript
             public static void namefy<T>(T block, BlocksNumerator numerator)
             {
                 string typeName = block.GetType().ToString();
-                string newBlockName = typeName.Substring(3) + numerator.blockNumber();
+                int index = typeName.IndexOf("My") + 2;
+                string newBlockName = typeName.Substring(index) + numerator.blockNumber();
             }           
         }
 
