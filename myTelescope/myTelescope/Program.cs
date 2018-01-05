@@ -123,54 +123,159 @@ namespace IngameScript
 
                         camsCollection[(currentBlock as IMyCameraBlock).GetType()] = countOfType[0]._currentNum;
                     }
-                    if (currentBlock is IMyTextPanel)
+                    else if (currentBlock is IMyTextPanel)
                     {
                         BlocksNameficator.namefy<IMyTextPanel>(currentBlock as IMyTextPanel, countOfType[1]);
                         TypesCollection camsCollection = new TypesCollection();
 
                         camsCollection[(currentBlock as IMyTextPanel).GetType()] = countOfType[1]._currentNum;
                     }
-                    if (currentBlock is IMyButtonPanel)
+                    else if (currentBlock is IMyButtonPanel)
                     {
                         BlocksNameficator.namefy<IMyButtonPanel>((currentBlock as IMyButtonPanel), countOfType[2]);
                         TypesCollection camsCollection = new TypesCollection();
 
                         camsCollection[(currentBlock as IMyButtonPanel).GetType()] = countOfType[2]._currentNum;
                     }
-                    if (currentBlock is IMyControlPanel)
+                    else if (currentBlock is IMyControlPanel)
                     {
                         BlocksNameficator.namefy<IMyControlPanel>((currentBlock as IMyControlPanel), countOfType[3]);
                         TypesCollection camsCollection = new TypesCollection();
 
                         camsCollection[(currentBlock as IMyControlPanel).GetType()] = countOfType[3]._currentNum;
                     }
-                    if (currentBlock is IMySolarPanel)
+                    else if (currentBlock is IMySolarPanel)
                     {
                         BlocksNameficator.namefy<IMySolarPanel>((currentBlock as IMySolarPanel), countOfType[4]);
                         TypesCollection camsCollection = new TypesCollection();
 
                         camsCollection[(currentBlock as IMySolarPanel).GetType()] = countOfType[4]._currentNum;
                     }
-                    if (currentBlock is IMySoundBlock)
+                    else if (currentBlock is IMySoundBlock)
                     {
                         BlocksNameficator.namefy<IMySoundBlock>((currentBlock as IMySoundBlock), countOfType[5]);
                         TypesCollection camsCollection = new TypesCollection();
 
                         camsCollection[(currentBlock as IMySoundBlock).GetType()] = countOfType[5]._currentNum;
                     }
-                    if (currentBlock is IMyTimerBlock)
+                    else if (currentBlock is IMyTimerBlock)
                     {
                         BlocksNameficator.namefy<IMyTimerBlock>((currentBlock as IMyTimerBlock), countOfType[6]);
                         TypesCollection camsCollection = new TypesCollection();
 
                         camsCollection[(currentBlock as IMyTimerBlock).GetType()] = countOfType[6]._currentNum;
                     }
-                    if (currentBlock is IMyShipMergeBlock)
+                    else if (currentBlock is IMyShipMergeBlock)
                     {
-                        BlocksNameficator.namefy<IMyShipMergeBlock>((currentBlock as IMyShipMergeBlock), countOfType[0]);
+                        BlocksNameficator.namefy<IMyShipMergeBlock>((currentBlock as IMyShipMergeBlock), countOfType[7]);
                         TypesCollection camsCollection = new TypesCollection();
 
-                        camsCollection[(currentBlock as IMyShipMergeBlock).GetType()] = countOfType[0]._currentNum;
+                        camsCollection[(currentBlock as IMyShipMergeBlock).GetType()] = countOfType[7]._currentNum;
+                    }
+                    else if (currentBlock is IMyArtificialMassBlock)
+                    {
+                        BlocksNameficator.namefy<IMyArtificialMassBlock>((currentBlock as IMyArtificialMassBlock), countOfType[8]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyArtificialMassBlock).GetType()] = countOfType[8]._currentNum;
+                    }
+                    else if (currentBlock is IMyVirtualMass)
+                    {
+                        BlocksNameficator.namefy<IMyVirtualMass>((currentBlock as IMyVirtualMass), countOfType[9]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyVirtualMass).GetType()] = countOfType[9]._currentNum;
+                    }
+                    else if (currentBlock is IMyGravityGenerator)
+                    {
+                        BlocksNameficator.namefy<IMyGravityGenerator>((currentBlock as IMyGravityGenerator), countOfType[10]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyGravityGenerator).GetType()] = countOfType[10]._currentNum;
+                    }
+                    else if (currentBlock is IMyGravityGeneratorSphere)
+                    {
+                        BlocksNameficator.namefy<IMyGravityGeneratorSphere>((currentBlock as IMyGravityGeneratorSphere), countOfType[11]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyGravityGeneratorSphere).GetType()] = countOfType[11]._currentNum;
+                    }
+                    else if (currentBlock is IMyInteriorLight)
+                    {
+                        BlocksNameficator.namefy<IMyInteriorLight>( (currentBlock as IMyInteriorLight), countOfType[12]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyInteriorLight).GetType()] = countOfType[12]._currentNum;
+                    }
+                    else if (currentBlock is IMyLandingGear)
+                    {
+                        BlocksNameficator.namefy<IMyLandingGear>((currentBlock as IMyLandingGear), countOfType[13]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyLandingGear).GetType()] = countOfType[13]._currentNum;
+                    }
+                    else if (currentBlock is IMyLargeGatlingTurret)
+                    {
+                        BlocksNameficator.namefy<IMyLargeGatlingTurret>((currentBlock as IMyLargeGatlingTurret), countOfType[14]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyLargeGatlingTurret).GetType()] = countOfType[14]._currentNum;
+                    }
+                    else if (currentBlock is IMyLargeInteriorTurret)
+                    {
+                        BlocksNameficator.namefy<IMyLargeInteriorTurret>((currentBlock as IMyLargeInteriorTurret), countOfType[15]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyLargeInteriorTurret).GetType()] = countOfType[15]._currentNum;
+                    }
+                    else if (currentBlock is IMyLargeMissileTurret)
+                    {
+                        BlocksNameficator.namefy<IMyLargeMissileTurret>((currentBlock as IMyLargeMissileTurret), countOfType[16]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyLargeMissileTurret).GetType()] = countOfType[16]._currentNum;
+                    }
+                    else if (currentBlock is IMyMedicalRoom)
+                    {
+                        BlocksNameficator.namefy<IMyMedicalRoom>((currentBlock as IMyMedicalRoom), countOfType[17]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyMedicalRoom).GetType()] = countOfType[17]._currentNum;
+                    }
+                    else if (currentBlock is IMyOxygenFarm)
+                    {
+                        BlocksNameficator.namefy<IMyOxygenFarm>((currentBlock as IMyOxygenFarm), countOfType[18]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyOxygenFarm).GetType()] = countOfType[18]._currentNum;
+                    }
+                    else if (currentBlock is IMyParachute)
+                    {
+                        BlocksNameficator.namefy<IMyParachute>((currentBlock as IMyParachute), countOfType[19]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyParachute).GetType()] = countOfType[19]._currentNum;
+                    }
+                    else if (currentBlock is IMySpaceBall)
+                    {
+                        BlocksNameficator.namefy<IMySpaceBall>((currentBlock as IMySpaceBall), countOfType[20]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMySpaceBall).GetType()] = countOfType[20]._currentNum;
+                    }
+                    else if (currentBlock is IMyVirtualMass)
+                    {
+                        BlocksNameficator.namefy<IMyVirtualMass>((currentBlock as IMyVirtualMass), countOfType[21]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyVirtualMass).GetType()] = countOfType[21]._currentNum;
+                    }
+                    else if (currentBlock is IMyAirVent)
+                    {
+                        BlocksNameficator.namefy<IMyAirVent>((currentBlock as IMyAirVent), countOfType[22]);
+                        TypesCollection camsCollection = new TypesCollection();
+
+                        camsCollection[(currentBlock as IMyAirVent).GetType()] = countOfType[22]._currentNum;
                     }
                 }
             }
