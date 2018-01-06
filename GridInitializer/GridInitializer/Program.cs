@@ -22,6 +22,11 @@ namespace IngameScript
 
         public Program()
         {
+            IMyTextPanel debugLCD = GridTerminalSystem.GetBlockWithName( "DebugLCD" ) as IMyTextPanel;
+            debugLCD.ShowPublicTextOnScreen();
+            GridInitializer gridInitializer = new GridInitializer( this, debugLCD );
+
+            gridInitializer.init();
 
 
         }
@@ -45,10 +50,10 @@ namespace IngameScript
                 get;
             }
 
-            public BlocksNumerator numberLenght( byte value )
-            {               
-                    _numberLenght = value;
-                    return this;
+            public BlocksNumerator numberLenght(byte value)
+            {
+                _numberLenght = value;
+                return this;
             }
 
             public BlocksNumerator(ushort numberLenght = 4)
@@ -67,7 +72,7 @@ namespace IngameScript
                 string number = " ";
 
                 uint num = newNumber();
-                for (uint i = 0; i < Math.Abs(_numberLenght - num.ToString().Length); i++)
+                for (uint i = 0; i < Math.Abs( _numberLenght - num.ToString().Length ); i++)
                 {
                     number += "0";
                 }
@@ -79,38 +84,57 @@ namespace IngameScript
 
         public static class BlocksNameficator
         {
-            public static void namefy(IMyTerminalBlock block, BlocksNumerator numerator)
+            public static bool namefy(IMyTerminalBlock block, BlocksNumerator numerator,/*Debug*/ Program parent)
             {
                 string typeName = block.GetType().ToString();
-                int index = typeName.IndexOf("My") + 2;
-                string newBlockName = typeName.Substring(index) + numerator.blockNumber();
+                int indexOfBlockNameStart = typeName.IndexOf( "My" ) + 2;
+
+
+                /*Debug*/
+                parent.Echo( $"Debug: BlocksNameficator::namefy: tipeName: {typeName}" );
+                /*Debug*/
+                parent.Echo( $"Debug: BlocksNameficator::namefy: indexOfBlockNameStart: {indexOfBlockNameStart}" );
+
+
+                string numeratedBlockkName = typeName.Substring( indexOfBlockNameStart ) + numerator.blockNumber();
+                block.CustomName = numeratedBlockkName;
+                /*Debug*/
+                parent.Echo( $"Debug: BlocksNameficator::namefy: tipeName: {numeratedBlockkName}" );
+
+                ///*Debug*/
+                //parent.Echo( $"Debug: BlocksNameficator::namefy: tipeName: {nuberatedBlockkName}" );
+                return true;
             }
         }
 
+        /// <summary>
+        ///     TypesIndexes [ Type blockType, byte indexOfType ]
+        /// </summary>
         public class TypesIndexes : Dictionary<Type, byte>
         {
         }
 
         /// <summary>
-        ///     TypesCollection
-        ///     contanes some Types and Quantity of objects of this type
+        ///     BlocksCollection
+        ///     contanes some Blocks and Quantity of objects of this type
         /// </summary>
         public class BlocksCollection : Dictionary<IMyTerminalBlock, uint>
         {
         }
 
         /// <summary>
-        ///     BlocksOfTypeCollection
+        ///     BlockTypesDictionary [ Type blockType, uint countBlocksOfthisType ]
         ///     contanes All Bloks of grid, type of every block and quontity of blocks of this Type or Interface
         /// </summary>
-        public class BlocksOfTypeCollection : Dictionary<Type, BlocksCollection>
+        public class BlockTypesDictionary : Dictionary<Type, uint>
         {
         }
 
         public class GridInitializer
         {
             Program _parentProgram;
-            public BlocksOfTypeCollection _blocksDictionary
+            IMyTextPanel _debugLCD;
+            public BlockTypesDictionary _blocksDictionary
             {
                 get;
                 private set;
@@ -122,29 +146,40 @@ namespace IngameScript
                 private set;
             }
 
-            GridInitializer(Program parentProgram)
+            public GridInitializer(Program parentProgram, IMyTextPanel debugLCD)
             {
                 _parentProgram = parentProgram;
+                _debugLCD = debugLCD;
+                _blocksDictionary = new BlockTypesDictionary();
+                _typesIdexes = new TypesIndexes();
 
-                _blocksDictionary = new BlocksOfTypeCollection();
+                /*Debug*/
+                _parentProgram.Echo( "Debug: GridInitializer::GridInitializer(this)  " );
             }
-
-            public GridInitializer()
+            public void init()
             {
-                List<IMyTerminalBlock> blocksList = new List<IMyTerminalBlock>();
-                _parentProgram.GridTerminalSystem.GetBlocks(blocksList);
+                /*Debug*/
+                _parentProgram.Echo( "Debug: GridInitializer::init()  " );
+                string debugStr;
 
-                BlocksNumerator[] countOfType = new BlocksNumerator [32];
+
+                List<IMyTerminalBlock> blocksList = new List<IMyTerminalBlock>();
+                _parentProgram.GridTerminalSystem.GetBlocks( blocksList );
+
+                BlocksNumerator[] countOfType = new BlocksNumerator[ 32 ];
 
                 _typesIdexes = new TypesIndexes();
 
-                uint index = 0;
+                byte curTypeIndex = 0;
 
                 Random random = new Random();
 
+
+
                 foreach (var currentBlock in blocksList)
                 {
-
+                    /*Debug*/
+                    _parentProgram.Echo( "Debug: GridInitializer::init() foreach " );
                     /**
                     if (currentBlock is IMyCameraBlock)
                     {
@@ -307,24 +342,37 @@ namespace IngameScript
 
                         camsCollection[(currentBlock as IMyAirVent).GetType()] = countOfType[22]._currentNum;
                     }*/
-
-                    if (_blocksDictionary[currentBlock.GetType()] == null)
+                    if (!_blocksDictionary.ContainsKey( currentBlock.GetType() ))
                     {
-                        _blocksDictionary[currentBlock.GetType()][currentBlock] = 0;
+                        /*Debug*/
+                        debugStr = $"Debug: GridInitializer::init foreach _blockDic ! conteins TKey: \n\t {currentBlock.GetType()} ";
+                        _parentProgram.Echo( debugStr );
+                        _debugLCD.WritePublicText( debugStr );
+                        
+                        _blocksDictionary.Add( currentBlock.GetType(), 1 );
+
+                        /*Debug*/
+                        debugStr = $"Debug: GridInitializer::init foreach \\(_blockDic ! conteins TKey): \n\t {currentBlock.GetType()} ";
+                        _parentProgram.Echo( debugStr );
+                        _debugLCD.WritePublicText( debugStr );
                     } else
                     {
-                        _blocksDictionary[currentBlock.GetType()][currentBlock]++;
+                        _blocksDictionary[ currentBlock.GetType() ]++;
                     }
 
-                    if (_typesIdexes[currentBlock.GetType()] == 0)
+
+                    if (!_typesIdexes.ContainsKey( currentBlock.GetType() ))
                     {
-                        _typesIdexes[currentBlock.GetType()] = (byte)random.Next(1, 32);
+                        _typesIdexes.Add( currentBlock.GetType(), (byte)curTypeIndex );
+                        countOfType[ curTypeIndex ] = new BlocksNumerator( 5 );
+                        curTypeIndex++;
                     }
 
-                    BlocksNameficator.namefy(currentBlock as IMyTerminalBlock, 
-                                             (countOfType[_typesIdexes[currentBlock.GetType()]]).numberLenght(5));
-
+                    BlocksNameficator.namefy( currentBlock as IMyTerminalBlock,
+                                                 (countOfType[ _typesIdexes[ currentBlock.GetType() ] ]), /*Debug*/ _parentProgram );
                 }
+                /*Debug*/
+                _parentProgram.Echo( "Debug: GridInitializer::init() ////////// " );
             }
         }
 
