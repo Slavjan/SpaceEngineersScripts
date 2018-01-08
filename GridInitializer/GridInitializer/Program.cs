@@ -16,13 +16,87 @@ using VRageMath;
 
 namespace IngameScript
 {
+
     partial class Program : MyGridProgram
     {
+        static bool debugFlag = true;
 
+        const string debugLCDcustomData = "DebugLCD";
+        static List<IMyTerminalBlock> debugLCDlist;
+        static IMyTextPanel debugLCD;
+        
+        static Program __program;
+        static string debugMSG;
 
         public Program()
         {
-            
+            __program = this;
+
+            debugLCDlist = new List<IMyTerminalBlock>();
+            GridTerminalSystem.SearchBlocksOfName( debugLCDcustomData, debugLCDlist, debugLCDlist => debugLCDlist is IMyTextPanel );
+            try
+            {
+                debugLCD = debugLCDlist.First<IMyTerminalBlock>() as IMyTextPanel;
+            } catch (Exception e)
+            {
+                debugMSG = $"Exception: {e}";
+
+                Echo( debugMSG );
+
+                if (debugLCD != null)
+                    debugLCD.WritePublicText( debugMSG, true );
+                else
+                    Echo( " DebugLCD not found\n PLEASE rename your DebugLCD and \n add Custom Data too" );
+
+                throw;
+            }
+
+            try
+            {
+                debugLCD.ShowPublicTextOnScreen();
+            } catch (Exception e)
+            {
+                debugMSG = $"Exception: {e}";
+
+                Echo( debugMSG );
+
+                if (debugLCD != null)
+                    debugLCD.WritePublicText( debugMSG, true );
+                else
+                    Echo( " DebugLCD not found" );
+
+                throw;
+            }
+
+
+#if DEBUG
+           
+            debugMSG = $"Debug: if debug \n";
+            __program.Echo( debugMSG );
+
+            if (debugLCD != null)
+                debugLCD.WritePublicText( debugMSG, true );
+            else
+                __program.Echo( " DebugLCD not found" );
+#endif
+
+            GridInitializer gridInitializer = new GridInitializer( this, debugLCD );
+            try
+            {
+                gridInitializer.init();
+            } catch (Exception e)
+            {
+                debugMSG = $"Exception: {e}";
+
+                __program.Echo( debugMSG );
+
+                if (debugLCD != null)
+                    debugLCD.WritePublicText( debugMSG, true );
+                else
+                    __program.Echo( " DebugLCD not found" );
+
+                throw;
+            }
         }
 
         public void Save()
@@ -37,11 +111,17 @@ namespace IngameScript
 
         public class BlocksNumerator
         {
-            ushort _numberLenght = 4;
+            byte _numberLenght = 4;
             public uint _currentNum
             {
                 private set;
                 get;
+            }
+
+            public BlocksNumerator numberLenght(byte value)
+            {
+                _numberLenght = value;
+                return this;
             }
 
             public BlocksNumerator(ushort numberLenght = 4)
@@ -60,7 +140,7 @@ namespace IngameScript
                 string number = " ";
 
                 uint num = newNumber();
-                for (uint i = 0; i < Math.Abs(_numberLenght - num.ToString().Length); i++)
+                for (uint i = 0; i <= Math.Abs( _numberLenght - num.ToString().Length ); i++)
                 {
                     number += "0";
                 }
@@ -72,50 +152,134 @@ namespace IngameScript
 
         public static class BlocksNameficator
         {
-            public static void namefy<T>(T block, BlocksNumerator numerator)
+            public static bool namefy(IMyTerminalBlock block, BlocksNumerator numerator,/*Debug*/ Program parent)
             {
                 string typeName = block.GetType().ToString();
-                string newBlockName = typeName.Substring(3) + numerator.blockNumber();
-            }           
+                int indexOfBlockNameStart = typeName.IndexOf( "My" ) + 2;
+                string numeratedBlockkName;
+
+#if DEBUG
+
+                debugMSG = $"Debug: BlocksNameficator::namefy: tipeName: {typeName}" + "\n";
+                __program.Echo( debugMSG );
+
+                if (debugLCD != null)
+                    debugLCD.WritePublicText( debugMSG, true );
+
+                debugMSG = $"Debug: BlocksNameficator::namefy: indexOfBlockNameStart: {indexOfBlockNameStart}" + "\n";
+                __program.Echo( debugMSG );
+
+                if (debugLCD != null)
+                    debugLCD.WritePublicText( debugMSG, true );
+#endif
+                if (block is IMyTextPanel && block.CustomData.Contains( debugLCDcustomData ))
+                {
+                    numeratedBlockkName = debugLCDcustomData + numerator.blockNumber();
+                } else
+                {
+                    numeratedBlockkName = typeName.Substring( indexOfBlockNameStart ) + numerator.blockNumber();
+                }
+                block.CustomName = numeratedBlockkName;
+
+#if DEBUG
+                debugMSG = $"Debug: BlocksNameficator::namefy: tipeName: {numeratedBlockkName}" + "\n";
+                __program.Echo( debugMSG );
+
+                if (debugLCD != null)
+                    debugLCD.WritePublicText( debugMSG, true );
+#endif
+                return true;
+            }
         }
 
         /// <summary>
-        ///     TypesCollection
-        ///     contanes some Types and Quantity of objects of this type
+        ///     TypesIndexes [ Type blockType, byte indexOfType ]
         /// </summary>
-        public class TypesCollection : Dictionary<Type, uint>
+        public class TypesIndexes : Dictionary<Type, byte>
         {
         }
 
         /// <summary>
-        ///     BlocksOfTypeCollection
+        ///     BlocksCollection
+        ///     contanes some Blocks and Quantity of objects of this type
+        /// </summary>
+        public class BlocksCollection : Dictionary<IMyTerminalBlock, uint>
+        {
+        }
+
+        /// <summary>
+        ///     BlockTypesDictionary [ Type blockType, uint countBlocksOfthisType ]
         ///     contanes All Bloks of grid, type of every block and quontity of blocks of this Type or Interface
         /// </summary>
-        public class BlocksOfTypeCollection : Dictionary<IMyTerminalBlock, TypesCollection>
+        public class BlockTypesDictionary : Dictionary<Type, uint>
         {
         }
 
         public class GridInitializer
         {
             Program _parentProgram;
-            BlocksOfTypeCollection _blocksDictionary;
-
-            GridInitializer(Program parentProgram)
+            IMyTextPanel _debugLCD;
+            public BlockTypesDictionary _blocksDictionary
             {
-                _parentProgram = parentProgram;
-
-                _blocksDictionary = new BlocksOfTypeCollection();
+                get;
+                private set;
             }
 
-            public GridInitializer()
+            public TypesIndexes _typesIdexes
             {
-                List<IMyTerminalBlock> blocksList = new List<IMyTerminalBlock>();
-                _parentProgram.GridTerminalSystem.GetBlocks(blocksList);
+                get;
+                private set;
+            }
 
-                BlocksNumerator[] countOfType = new BlocksNumerator[32];
-                uint i = 0;
+            public GridInitializer(Program parentProgram, IMyTextPanel debugLCD)
+            {
+                _parentProgram = parentProgram;
+                _debugLCD = debugLCD;
+                _blocksDictionary = new BlockTypesDictionary();
+                _typesIdexes = new TypesIndexes();
+
+#if DEBUG
+                debugMSG = "Debug: GridInitializer::GridInitializer(this)  " + "\n";
+                __program.Echo( debugMSG );
+
+                if (debugLCD != null)
+                    debugLCD.WritePublicText( debugMSG, true );
+#endif
+            }
+            public void init()
+            {
+
+#if DEBUG
+                debugMSG = "Debug: GridInitializer::init()  " + "\n";
+                __program.Echo( debugMSG );
+
+                if (debugLCD != null)
+                    debugLCD.WritePublicText( debugMSG, true );
+#endif
+
+                List<IMyTerminalBlock> blocksList = new List<IMyTerminalBlock>();
+                _parentProgram.GridTerminalSystem.GetBlocks( blocksList );
+
+                BlocksNumerator[] countOfType = new BlocksNumerator[ 32 ];
+
+                _typesIdexes = new TypesIndexes();
+
+                byte curTypeIndex = 0;
+
+                Random random = new Random();
+
+
+
                 foreach (var currentBlock in blocksList)
                 {
+#if DEBUG
+                    debugMSG = "Debug: GridInitializer::init() foreach " + "\n";
+                    __program.Echo( debugMSG );
+
+                    if (debugLCD != null)
+                        debugLCD.WritePublicText( debugMSG, true );
+#endif
+                    /**
                     if (currentBlock is IMyCameraBlock)
                     {
                         BlocksNameficator.namefy<IMyCameraBlock>( (currentBlock as IMyCameraBlock), countOfType[0]);
@@ -276,8 +440,51 @@ namespace IngameScript
                         TypesCollection camsCollection = new TypesCollection();
 
                         camsCollection[(currentBlock as IMyAirVent).GetType()] = countOfType[22]._currentNum;
+                    }*/
+                    if (!_blocksDictionary.ContainsKey( currentBlock.GetType() ))
+                    {
+#if DEBUG
+                        debugMSG = $"Debug: GridInitializer::init foreach _blockDic ! conteins TKey: \n\t {currentBlock.GetType()} " + "\n";
+                        __program.Echo( debugMSG );
+
+                        if (debugLCD != null)
+                            debugLCD.WritePublicText( debugMSG, true );
+#endif
+
+
+                        _blocksDictionary.Add( currentBlock.GetType(), 1 );
+
+#if DEBUG
+                        debugMSG = $"Debug: GridInitializer::init foreach \\(_blockDic ! conteins TKey): \n\t {currentBlock.GetType()} " + "\n";
+                        __program.Echo( debugMSG );
+
+                        if (debugLCD != null)
+                            debugLCD.WritePublicText( debugMSG, true );
+#endif
+                    } else
+                    {
+                        _blocksDictionary[ currentBlock.GetType() ]++;
                     }
+
+
+                    if (!_typesIdexes.ContainsKey( currentBlock.GetType() ))
+                    {
+                        _typesIdexes.Add( currentBlock.GetType(), (byte)curTypeIndex );
+                        countOfType[ curTypeIndex ] = new BlocksNumerator( 5 );
+                        curTypeIndex++;
+                    }
+
+                    BlocksNameficator.namefy( currentBlock as IMyTerminalBlock,
+                                                 (countOfType[ _typesIdexes[ currentBlock.GetType() ] ]), /*Debug*/ _parentProgram );
                 }
+
+#if DEBUG
+                debugMSG = "Debug: GridInitializer::init() ////////// " + "\n";
+                __program.Echo( debugMSG );
+
+                if (debugLCD != null)
+                    debugLCD.WritePublicText( debugMSG, true );
+#endif
             }
         }
 
