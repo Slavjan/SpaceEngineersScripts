@@ -17,22 +17,22 @@ using VRageMath;
 
 namespace IngameScript
 {
+
     partial class Program : MyGridProgram
     {
-
+        static bool debugFlag = true;
 
         const string debugLCDcustomData = "DebugLCD";
         static List<IMyTerminalBlock> debugLCDlist;
         static IMyTextPanel debugLCD;
-
-
-#if true
+        
         static Program __program;
         static string debugMSG;
-#endif
 
         public Program()
         {
+            __program = this;
+
             debugLCDlist = new List<IMyTerminalBlock>();
             GridTerminalSystem.SearchBlocksOfName( debugLCDcustomData, debugLCDlist, debugLCDlist => debugLCDlist is IMyTextPanel );
             try
@@ -70,8 +70,8 @@ namespace IngameScript
             }
 
 
-#if true
-            __program = this;
+#if DEBUG || debugFlag
+           
             debugMSG = $"Debug: if debug \n";
             __program.Echo( debugMSG );
 
@@ -159,7 +159,7 @@ namespace IngameScript
                 int indexOfBlockNameStart = typeName.IndexOf( "My" ) + 2;
                 string numeratedBlockkName;
 
-#if true
+#if DEBUG
 
                 debugMSG = $"Debug: BlocksNameficator::namefy: tipeName: {typeName}" + "\n";
                 __program.Echo( debugMSG );
@@ -182,7 +182,7 @@ namespace IngameScript
                 }
                 block.CustomName = numeratedBlockkName;
 
-#if true
+#if DEBUG
                 debugMSG = $"Debug: BlocksNameficator::namefy: tipeName: {numeratedBlockkName}" + "\n";
                 __program.Echo( debugMSG );
 
@@ -239,7 +239,7 @@ namespace IngameScript
                 _blocksDictionary = new BlockTypesDictionary();
                 _typesIdexes = new TypesIndexes();
 
-#if true
+#if DEBUG
                 debugMSG = "Debug: GridInitializer::GridInitializer(this)  " + "\n";
                 __program.Echo( debugMSG );
 
@@ -250,7 +250,7 @@ namespace IngameScript
             public void init()
             {
 
-#if true
+#if DEBUG
                 debugMSG = "Debug: GridInitializer::init()  " + "\n";
                 __program.Echo( debugMSG );
 
@@ -273,7 +273,7 @@ namespace IngameScript
 
                 foreach (var currentBlock in blocksList)
                 {
-#if true
+#if DEBUG
                     debugMSG = "Debug: GridInitializer::init() foreach " + "\n";
                     __program.Echo( debugMSG );
 
@@ -444,7 +444,7 @@ namespace IngameScript
                     }*/
                     if (!_blocksDictionary.ContainsKey( currentBlock.GetType() ))
                     {
-#if true
+#if DEBUG
                         debugMSG = $"Debug: GridInitializer::init foreach _blockDic ! conteins TKey: \n\t {currentBlock.GetType()} " + "\n";
                         __program.Echo( debugMSG );
 
@@ -455,7 +455,7 @@ namespace IngameScript
 
                         _blocksDictionary.Add( currentBlock.GetType(), 1 );
 
-#if true
+#if DEBUG
                         debugMSG = $"Debug: GridInitializer::init foreach \\(_blockDic ! conteins TKey): \n\t {currentBlock.GetType()} " + "\n";
                         __program.Echo( debugMSG );
 
@@ -479,7 +479,7 @@ namespace IngameScript
                                                  (countOfType[ _typesIdexes[ currentBlock.GetType() ] ]), /*Debug*/ _parentProgram );
                 }
 
-#if true
+#if DEBUG
                 debugMSG = "Debug: GridInitializer::init() ////////// " + "\n";
                 __program.Echo( debugMSG );
 
