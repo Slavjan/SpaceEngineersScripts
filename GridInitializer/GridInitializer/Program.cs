@@ -1,5 +1,4 @@
-﻿
-using Sandbox.Game.EntityComponents;
+﻿using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using SpaceEngineers.Game.ModAPI.Ingame;
@@ -70,7 +69,7 @@ namespace IngameScript
             }
 
 
-#if DEBUG || debugFlag
+#if DEBUG
            
             debugMSG = $"Debug: if debug \n";
             __program.Echo( debugMSG );
