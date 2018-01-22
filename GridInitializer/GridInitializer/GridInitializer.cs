@@ -17,7 +17,7 @@ using VRageMath;
 namespace IngameScript
 {
 
-    partial class Program : MyGridProgram
+    partial class GridInitializer : MyGridProgram
     {
         static bool debugFlag = true;
 
@@ -25,10 +25,10 @@ namespace IngameScript
         static List<IMyTerminalBlock> debugLCDlist;
         static IMyTextPanel debugLCD;
         
-        static Program __program;
+        static IngameScript.GridInitializer __program;
         static string debugMSG;
 
-        public Program()
+        public GridInitializer()
         {
             __program = this;
 
@@ -152,7 +152,7 @@ namespace IngameScript
 
         public static class BlocksNameficator
         {
-            public static bool namefy(IMyTerminalBlock block, BlocksNumerator numerator,/*Debug*/ Program parent)
+            public static bool namefy(IMyTerminalBlock block, BlocksNumerator numerator,/*Debug*/ IngameScript.GridInitializer parent)
             {
                 string typeName = block.GetType().ToString();
                 int indexOfBlockNameStart = typeName.IndexOf( "My" ) + 2;
@@ -217,7 +217,7 @@ namespace IngameScript
 
         public class GridInitializer
         {
-            Program _parentProgram;
+            IngameScript.GridInitializer _parentProgram;
             IMyTextPanel _debugLCD;
             public BlockTypesDictionary _blocksDictionary
             {
@@ -231,7 +231,7 @@ namespace IngameScript
                 private set;
             }
 
-            public GridInitializer(Program parentProgram, IMyTextPanel debugLCD)
+            public GridInitializer(IngameScript.GridInitializer parentProgram, IMyTextPanel debugLCD)
             {
                 _parentProgram = parentProgram;
                 _debugLCD = debugLCD;
